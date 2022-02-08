@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { 
   createUserWithEmailAndPassword,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
 } from 'firebase/auth';
 import './App.css';
 import { auth } from './firebaseConfig';
@@ -28,11 +30,17 @@ function App() {
   }
 
   const login = async () => {
+    try {
+      const user = await signInWithEmailAndPassword(auth, loginrEmail, loginPassword);
+      console.log(user);
 
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   const logout = async () => {
-
+    await signOut(auth)
   }
 
   const handleOnChangeRegisterEmail = (e) => {
@@ -78,12 +86,13 @@ function App() {
           onChange={(e) => handleOnChangeLoginPassword(e)}
         />
 
-        <button>Login</button>
+        <button onClick={login}>Login</button>
       </div>
 
       <h4>User logged in</h4>
-      {user.email}
-      <button> Sign out</button>
+      {user && user.email}
+
+      <button onClick={logout}> Sign out</button>
     </div>
   );
 }
